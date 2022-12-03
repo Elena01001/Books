@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="margin_spacing">16dp</dimen>
+    <dimen name="big_spacing">48dp</dimen>
+    <dimen name="icon_width">60dp</dimen>
+    <dimen name="icon_height">100dp</dimen>
+    <dimen name="medium_spacing">8dp</dimen>
+    <dimen name="common_spacing">32dp</dimen>
+    <dimen name="padding_spacing">12dp</dimen>
+    <dimen name="ok_margin">20dp</dimen>
+    <dimen name="min_spacing">4dp</dimen>
+</resources>
