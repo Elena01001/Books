@@ -3,6 +3,7 @@ package ru.netology.books.data
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import ru.netology.books.data.Constants.Companion.BASE_URL
+import ru.netology.books.data.exception.ResultCallAdapterFactory
 
 object Retrofit {
 
@@ -10,6 +11,7 @@ object Retrofit {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
+            .addCallAdapterFactory(ResultCallAdapterFactory())
             .build()
     }
 
@@ -21,6 +23,6 @@ object Retrofit {
 
 class Constants {
     companion object {
-        const val BASE_URL = "https://www.googleapis.com/books/v1/volumes/"
+        const val BASE_URL = "https://www.googleapis.com"
     }
 }

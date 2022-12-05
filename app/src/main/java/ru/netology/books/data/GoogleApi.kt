@@ -7,10 +7,10 @@ import ru.netology.books.domain.model.Book
 
 interface GoogleApi {
 
-    @GET(" ")
+    @GET("/books/v1/volumes/")
     suspend fun getBooksList(
         @Query("q") inTitle: String,
-        @Query("key") apiKey: String
-    ): List<Book> // где-то responce?
+//        @Query("key") apiKey: String
+    ): Result<List<Book>>
 
 }

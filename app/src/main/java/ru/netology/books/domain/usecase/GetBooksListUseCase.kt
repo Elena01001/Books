@@ -7,7 +7,7 @@ import ru.netology.books.domain.model.Book
 class GetBooksListUseCase (
     private val networkRepository: NetworkRepository
 ) {
-    suspend fun execute(search: String, apiKey: String): List<Book> {
-        return networkRepository.getBooksList(search, apiKey)
+    suspend fun execute(search: String): Result<List<Book>> {
+        return networkRepository.getBooksList(search)
     }
 }

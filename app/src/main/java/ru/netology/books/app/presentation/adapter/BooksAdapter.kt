@@ -1,4 +1,4 @@
-package ru.netology.books.presentation.adapter
+package ru.netology.books.app.presentation.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

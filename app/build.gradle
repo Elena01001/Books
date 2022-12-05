@@ -71,6 +71,14 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4'
 
+    // Koin
+    def koin_android_version= "3.3.0"
+    implementation "io.insert-koin:koin-android:$koin_android_version"
+    // Navigation Graph
+    implementation "io.insert-koin:koin-androidx-navigation:$koin_android_version"
+    // Koin for JUnit 4
+    testImplementation "io.insert-koin:koin-test-junit4:3.2.2"
+
     //paging
     implementation "androidx.paging:paging-runtime-ktx:3.2.0-alpha03"
 

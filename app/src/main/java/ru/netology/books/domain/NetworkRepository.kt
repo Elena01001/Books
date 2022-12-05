@@ -6,5 +6,5 @@ import ru.netology.books.domain.model.Book
 
 interface NetworkRepository {
 
-    suspend fun getBooksList(search: String, apiKey: String): List<Book>
+    suspend fun getBooksList(search: String): Result<List<Book>>
 }
