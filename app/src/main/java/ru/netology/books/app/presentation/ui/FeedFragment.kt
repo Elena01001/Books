@@ -1,26 +1,22 @@
 package ru.netology.books.app.presentation.ui
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import ru.netology.books.app.presentation.BookState
+import ru.netology.books.app.presentation.viewmodel.BookState
 import ru.netology.books.databinding.FeedFragmentBinding
-import ru.netology.books.app.presentation.BookViewModel
+import ru.netology.books.app.presentation.viewmodel.SearchByTitleViewModel
 import ru.netology.books.app.presentation.adapter.BooksAdapter
 
 class FeedFragment : Fragment() {
 
-    /*AIzaSyCdWvYMtPl9P3E37YnBzdOvwBhD2L42RF0*/
-
-    private val viewModel by viewModel<BookViewModel>()
+    private val viewModel by viewModel<SearchByTitleViewModel>()
 
     private var _binding: FeedFragmentBinding? = null
     private val binding get() = _binding!!
@@ -40,7 +36,9 @@ class FeedFragment : Fragment() {
         binding.progressBar.isVisible = false
 
         binding.searchButton.setOnClickListener {
-            search()
+            binding.progressBar.isVisible = true
+            val query = binding.searchText.editText?.text.toString()
+            viewModel.getBookList(query)
         }
 
         val adapter = BooksAdapter(viewModel)
@@ -48,31 +46,22 @@ class FeedFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             viewModel.booksFlow.collectLatest {
+                binding.progressBar.isVisible = false
                 when (it) {
                     is BookState.SUCCESS -> {
-                        adapter.submitList(adapter.currentList)
-
+                        adapter.submitList(it.books)
                     }
                     is BookState.FAILURE -> {
                         val message = it.message
                         /*LaunchedEffect(key1 = message) {
                             Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                         }*/
-
                     }
                     else -> {}
                 }
             }
         }
         return binding.root
-    }
-
-    private fun search() {
-        binding.progressBar.isVisible = true
-        val query = binding.searchText.editText?.text.toString()
-        viewModel.getBookList(query)
-        binding.progressBar.isVisible = false
-
     }
 
 }

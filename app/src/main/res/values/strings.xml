@@ -1,10 +1,11 @@
 <resources>
     <string name="app_name">Books</string>
-    <string name="search">Введите название книги или автора</string>
+    <string name="search">Введите название книги</string>
     <string name="search_button">ПОИСК</string>
     <string name="book_title">Сказка о царе Салтане, о сыне его славном и могучем богатыре князе Гвидоне</string>
     <string name="book_author">Александр Сергеевич Пушкин</string>
     <string name="publishing_date">1831 год</string>
     <string name="search_by_title">по названию</string>
     <string name="search_by_category">по категории</string>
+    <string name="put_category">Введите категорию книг</string>
 </resources>

@@ -1,10 +1,12 @@
 package ru.netology.books.app.presentation.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import ru.netology.books.R
 import ru.netology.books.databinding.BookItemBinding
 import ru.netology.books.domain.model.Book
@@ -44,7 +46,12 @@ class BooksAdapter(
                 title.text = book.title
                 author.text = book.author
                 publishingDate.text = book.publicationDate
-                image.setImageResource(R.drawable.ic_book)
+                Log.d("image", "$image")
+                Glide.with(image)
+                    .load(book.image)
+                    .placeholder(R.drawable.ic_book)
+                    .error(R.drawable.ic_book)
+                    .into(image)
             }
         }
     }
@@ -58,3 +65,4 @@ class BooksAdapter(
             oldItem == newItem
     }
 }
+

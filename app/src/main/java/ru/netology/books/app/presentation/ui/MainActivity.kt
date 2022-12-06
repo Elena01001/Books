@@ -16,7 +16,6 @@ class MainActivity : AppCompatActivity(){
         val binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        //библиотека навигации, кот автоматически отслеживает нажатия на пункты меню и открывает нужный фрагмент
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController

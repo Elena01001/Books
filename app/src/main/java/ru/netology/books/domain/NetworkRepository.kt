@@ -1,10 +1,10 @@
 package ru.netology.books.domain
 
-import androidx.paging.PagingData
-import kotlinx.coroutines.flow.Flow
-import ru.netology.books.domain.model.Book
+
+import ru.netology.books.domain.model.BookItems
 
 interface NetworkRepository {
 
-    suspend fun getBooksList(search: String): Result<List<Book>>
+    suspend fun getBooksListByTitle(title: String): Result<BookItems>
+    suspend fun getBooksListByCategory(category: String): Result<BookItems>
 }
