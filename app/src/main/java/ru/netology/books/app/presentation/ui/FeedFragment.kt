@@ -11,11 +11,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import ru.netology.books.app.presentation.viewmodel.BookState
-import ru.netology.books.databinding.FeedFragmentBinding
-import ru.netology.books.app.presentation.viewmodel.SearchByTitleViewModel
 import ru.netology.books.app.presentation.adapter.BooksAdapter
 import ru.netology.books.app.presentation.utils.hideKeyboard
+import ru.netology.books.app.presentation.viewmodel.BookState
+import ru.netology.books.app.presentation.viewmodel.SearchByTitleViewModel
+import ru.netology.books.databinding.FeedFragmentBinding
 import ru.netology.books.domain.model.Book
 
 class FeedFragment : Fragment() {
@@ -49,15 +49,17 @@ class FeedFragment : Fragment() {
                 binding.progressBar.isVisible = false
                 when (it) {
                     is BookState.SUCCESS -> {
-                        adapter.submitList(it.books)
+                        if (it.books.isEmpty()) {
+                            Toast.makeText(context, "Ничего не найдено", Toast.LENGTH_SHORT).show()
+                        } else {
+                            adapter.submitList(it.books)
+                        }
                     }
                     is BookState.FAILURE -> {
                         val message = it.message
-                        /*LaunchedEffect(key1 = message) {*/
                         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-                        /* }*/
                     }
-                    else -> {}
+                    is BookState.START -> {}
                 }
             }
         }

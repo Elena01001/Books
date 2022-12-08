@@ -21,7 +21,7 @@ data class VolumeInfo(
 
 @JsonClass(generateAdapter = true)
 data class BookItems(
-    val items: List<BookResponse>
+    val items: List<BookResponse>?
 )
 
 data class ImageLinks(

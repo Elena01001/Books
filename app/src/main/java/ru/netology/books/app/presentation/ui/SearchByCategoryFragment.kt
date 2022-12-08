@@ -51,15 +51,17 @@ class SearchByCategoryFragment : Fragment() {
                 binding.progressBar.isVisible = false
                 when (it) {
                     is BookState.SUCCESS -> {
-                        adapter.submitList(it.books)
+                        if (it.books.isEmpty()) {
+                            Toast.makeText(context, "Ничего не найдено", Toast.LENGTH_SHORT).show()
+                        } else {
+                            adapter.submitList(it.books)
+                        }
                     }
                     is BookState.FAILURE -> {
                         val message = it.message
-                       /* LaunchedEffect(key1 = message) {*/
-                            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-                       /* }*/
+                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                     }
-                    else -> {}
+                    is BookState.START -> {}
                 }
             }
         }

@@ -7,7 +7,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import ru.netology.books.app.presentation.adapter.BookInteractionListener
 import ru.netology.books.domain.model.Book
-import ru.netology.books.domain.model.BookResponse
 import ru.netology.books.domain.model.toBook
 import ru.netology.books.domain.usecase.GetBooksListByCategoryUseCase
 
@@ -24,11 +23,11 @@ class SearchByCategoryViewModel(
     fun getBookList(category: String) {
         viewModelScope.launch {
             getBooksListByCategoryUseCase.execute(category).onSuccess {
-                val bookListResponse = it.items.map { it.toBook() }
+                val bookListResponse = it.items?.map { it.toBook() } ?: emptyList()
                 getBookListEvent.emit(BookState.SUCCESS(bookListResponse))
             }
                 .onFailure {
-                    getBookListEvent.emit(BookState.FAILURE(it.localizedMessage!!))
+                    getBookListEvent.emit(BookState.FAILURE(it.localizedMessage.toString()))
                 }
         }
     }

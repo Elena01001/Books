@@ -23,11 +23,11 @@ class SearchByTitleViewModel(
     fun getBookList(title: String) {
         viewModelScope.launch {
             getBooksListByTitleUseCase.execute(title).onSuccess {
-                val bookListResponse = it.items.map { it!!.toBook() }
+                val bookListResponse = it.items?.map { it.toBook() } ?: emptyList()
                 getBookListEvent.emit(BookState.SUCCESS(bookListResponse))
             }
                 .onFailure {
-                    getBookListEvent.emit(BookState.FAILURE(it.localizedMessage!!))
+                    getBookListEvent.emit(BookState.FAILURE(it.localizedMessage.toString()))
                 }
         }
     }
