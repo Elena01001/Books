@@ -8,12 +8,12 @@ import ru.netology.books.domain.model.BookItems
 interface GoogleApi {
 
     @GET("/books/v1/volumes/")
-    suspend fun getBooksListByTitle(
+    suspend fun getBooksList(
         @Query("q") inTitle: String
     ): Result<BookItems>
 
-    @GET("/books/v1/volumes/")
+    /*@GET("/books/v1/volumes/")
     suspend fun getBooksListByCategory(
-        @Query("q=subject:") subject: String
-    ): Result<BookItems>
+        @Query("q") subject: String
+    ): Result<BookItems>*/
 }

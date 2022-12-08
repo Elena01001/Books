@@ -1,6 +1,5 @@
 package ru.netology.books.app.presentation.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -34,10 +33,7 @@ class BooksAdapter(
         private lateinit var book: Book
 
         init {
-            binding.image.setOnClickListener { listener.onBookCardClicked(book) }
-            binding.title.setOnClickListener { listener.onBookCardClicked(book) }
-            binding.author.setOnClickListener { listener.onBookCardClicked(book) }
-            binding.publishingDate.setOnClickListener { listener.onBookCardClicked(book) }
+            binding.root.setOnClickListener { listener.onBookCardClicked(book) }
         }
 
         fun bind(book: Book) {
@@ -45,8 +41,7 @@ class BooksAdapter(
             with(binding) {
                 title.text = book.title
                 author.text = book.author
-                publishingDate.text = book.publicationDate
-                Log.d("image", "$image")
+                category.text = book.category
                 Glide.with(image)
                     .load(book.image)
                     .placeholder(R.drawable.ic_book)

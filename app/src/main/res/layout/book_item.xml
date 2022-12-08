@@ -46,14 +46,14 @@
         app:layout_constraintTop_toBottomOf="@id/title" />
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/publishingDate"
+        android:id="@+id/category"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_spacing"
         android:layout_marginEnd="@dimen/margin_spacing"
         android:ellipsize="end"
         android:singleLine="true"
-        android:text="@string/publishing_date"
+        android:text="@string/book_category"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/image"
@@ -64,5 +64,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
-        app:constraint_referenced_ids="image, title, author, publishingDate" />
+        app:constraint_referenced_ids="image, title, author, category" />
 </androidx.constraintlayout.widget.ConstraintLayout>

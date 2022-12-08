@@ -12,6 +12,9 @@
         <argument
             android:name="ShowAppBar"
             android:defaultValue="true" />
+        <action
+            android:id="@+id/action_feedFragment_to_bookDetailsFragment"
+            app:destination="@id/bookDetailsFragment" />
     </fragment>
 
     <fragment
@@ -21,6 +24,18 @@
         <argument
             android:name="ShowAppBar"
             android:defaultValue="true" />
+        <action
+            android:id="@+id/action_searchByCategoryFragment_to_bookDetailsFragment"
+            app:destination="@id/bookDetailsFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/bookDetailsFragment"
+        android:name="ru.netology.books.app.presentation.ui.BookDetailsFragment"
+        tools:layout="@layout/book_details_fragment">
+        <argument
+            android:name="bookCard"
+            app:argType="ru.netology.books.domain.model.Book" />
     </fragment>
 
 </navigation>

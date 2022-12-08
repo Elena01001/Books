@@ -7,6 +7,6 @@ class GetBooksListByCategoryUseCase(
     private val networkRepository: NetworkRepository
 ) {
     suspend fun execute(category: String): Result<BookItems> {
-        return networkRepository.getBooksListByTitle(category)
+        return networkRepository.getBooksListByCategory(category)
     }
 }

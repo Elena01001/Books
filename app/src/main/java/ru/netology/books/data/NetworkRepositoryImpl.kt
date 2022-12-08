@@ -8,10 +8,10 @@ class NetworkRepositoryImpl(
 ) : NetworkRepository {
 
     override suspend fun getBooksListByTitle(title: String): Result<BookItems> {
-        return googleApi.getBooksListByTitle(title)
+        return googleApi.getBooksList(title)
     }
 
     override suspend fun getBooksListByCategory(category: String): Result<BookItems> {
-        return googleApi.getBooksListByCategory(category)
+        return googleApi.getBooksList("+subject:$category")
     }
 }

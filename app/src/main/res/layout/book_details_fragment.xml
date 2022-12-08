@@ -41,23 +41,35 @@
             android:layout_marginTop="@dimen/big_spacing"
             android:layout_marginEnd="@dimen/margin_spacing"
             android:text="@string/book_author"
+            android:textStyle="bold"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/image"
             app:layout_constraintTop_toBottomOf="@id/title" />
 
         <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/category"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_spacing"
+            android:layout_marginEnd="@dimen/margin_spacing"
+            android:text="@string/book_category"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/image"
+            app:layout_constraintTop_toBottomOf="@id/author" />
+
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/publishingDate"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_spacing"
-            android:layout_marginTop="@dimen/margin_spacing"
             android:layout_marginEnd="@dimen/margin_spacing"
             android:text="@string/publishing_date"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/image"
-            app:layout_constraintTop_toBottomOf="@id/author" />
+            app:layout_constraintTop_toBottomOf="@id/category" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/description"
