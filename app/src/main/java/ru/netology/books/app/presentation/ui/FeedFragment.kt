@@ -11,6 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import ru.netology.books.R
 import ru.netology.books.app.presentation.adapter.BooksAdapter
 import ru.netology.books.app.presentation.utils.hideKeyboard
 import ru.netology.books.app.presentation.viewmodel.BookState
@@ -43,17 +44,25 @@ class FeedFragment : Fragment() {
 
         val adapter = BooksAdapter(viewModel)
         binding.booksRecyclerView.adapter = adapter
+        observeGetBooksByTitle(adapter)
+        observeGetEmptyListByTitle(adapter)
 
-        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            viewModel.booksFlow.collectLatest {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.bookDetailsFlow.collectLatest {
+                onBookCardClick(it)
+            }
+        }
+
+        return binding.root
+    }
+
+    private fun observeGetBooksByTitle(adapter: BooksAdapter) {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.booksFlow.collect {
                 binding.progressBar.isVisible = false
                 when (it) {
                     is BookState.SUCCESS -> {
-                        if (it.books.isEmpty()) {
-                            Toast.makeText(context, "Ничего не найдено", Toast.LENGTH_SHORT).show()
-                        } else {
-                            adapter.submitList(it.books)
-                        }
+                        adapter.submitList(it.books)
                     }
                     is BookState.FAILURE -> {
                         val message = it.message
@@ -63,19 +72,25 @@ class FeedFragment : Fragment() {
                 }
             }
         }
-
-        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            viewModel.bookDetailsFlow.collectLatest {
-                it?.let { book -> onItemClick(book) }
-            }
-        }
-
-        return binding.root
     }
 
-    private fun onItemClick(book: Book) {
-        val action = FeedFragmentDirections.actionFeedFragmentToBookDetailsFragment(book)
+    private fun observeGetEmptyListByTitle(adapter: BooksAdapter) {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.emptyListFlow.collect {
+                binding.progressBar.isVisible = false
+                adapter.submitList(emptyList())
+                Toast.makeText(context, R.string.nothing_is_found, Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun onBookCardClick(book: Book) {
+        val action = FeedFragmentDirections.actionFeedFragmentToBookDetailsFragment(book, FEED)
         findNavController().navigate(action)
+    }
+
+    companion object {
+        const val FEED = "Feed"
     }
 
 }

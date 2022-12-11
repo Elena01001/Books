@@ -2,8 +2,7 @@ package ru.netology.books.app.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import ru.netology.books.app.presentation.adapter.BookInteractionListener
 import ru.netology.books.domain.model.Book
@@ -14,17 +13,26 @@ class SearchByTitleViewModel(
     private val getBooksListByTitleUseCase: GetBooksListByTitleUseCase
 ) : ViewModel(), BookInteractionListener {
 
-    private val bookDetailsViewEvent = MutableStateFlow<Book?>(null)
-    val bookDetailsFlow: StateFlow<Book?> = bookDetailsViewEvent
+    private val bookDetailsSharedFlow = MutableSharedFlow<Book>()
+    val bookDetailsFlow: Flow<Book> = bookDetailsSharedFlow.filterNotNull()
 
-    private var getBookListEvent = MutableStateFlow<BookState>(BookState.START)
-    val booksFlow: StateFlow<BookState> = getBookListEvent
+    private var getEmptyListEvent = MutableSharedFlow<List<Book>>()
+    val emptyListFlow: Flow<List<Book>> = getEmptyListEvent
+
+    private var getBookListEvent = MutableSharedFlow<BookState>(1, 1)
+    val booksFlow: Flow<BookState> = getBookListEvent
 
     fun getBookList(title: String) {
         viewModelScope.launch {
             getBooksListByTitleUseCase.execute(title).onSuccess {
-                val bookListResponse = it.items?.map { it.toBook() } ?: emptyList()
-                getBookListEvent.emit(BookState.SUCCESS(bookListResponse))
+                if (it.items != null) {
+                    val bookListResponse = it.items.map { it.toBook() }
+                    getBookListEvent.emit(BookState.SUCCESS(bookListResponse))
+                } else {
+                    getEmptyListEvent.emit((emptyList()))
+                    getBookListEvent.emit(BookState.START)
+                }
+
             }
                 .onFailure {
                     getBookListEvent.emit(BookState.FAILURE(it.localizedMessage.toString()))
@@ -34,7 +42,7 @@ class SearchByTitleViewModel(
 
     override fun onBookCardClicked(book: Book) {
         viewModelScope.launch {
-            bookDetailsViewEvent.emit(book)
+            bookDetailsSharedFlow.emit(book)
         }
     }
 }

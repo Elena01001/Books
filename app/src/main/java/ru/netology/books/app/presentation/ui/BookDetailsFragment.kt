@@ -5,15 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
-import kotlinx.coroutines.flow.collectLatest
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.netology.books.R
-import ru.netology.books.app.presentation.viewmodel.SearchByCategoryViewModel
-import ru.netology.books.app.presentation.viewmodel.SearchByTitleViewModel
+import ru.netology.books.app.presentation.ui.FeedFragment.Companion.FEED
 import ru.netology.books.databinding.BookDetailsFragmentBinding
 import ru.netology.books.domain.model.Book
 
@@ -53,6 +49,9 @@ class BookDetailsFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        findNavController().popBackStack()
+        if (args.comeback == FEED)
+            findNavController().popBackStack(R.id.feedFragment, false)
+        else
+            findNavController().popBackStack(R.id.searchByCategoryFragment, false)
     }
 }

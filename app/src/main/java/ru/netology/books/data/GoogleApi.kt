@@ -11,9 +11,4 @@ interface GoogleApi {
     suspend fun getBooksList(
         @Query("q") inTitle: String
     ): Result<BookItems>
-
-    /*@GET("/books/v1/volumes/")
-    suspend fun getBooksListByCategory(
-        @Query("q") subject: String
-    ): Result<BookItems>*/
 }

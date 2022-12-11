@@ -36,6 +36,9 @@
         <argument
             android:name="bookCard"
             app:argType="ru.netology.books.domain.model.Book" />
+        <argument
+            android:name="comeback"
+            app:argType="string" />
     </fragment>
 
 </navigation>

@@ -41,8 +41,8 @@
             android:layout_marginTop="@dimen/big_spacing"
             android:layout_marginEnd="@dimen/margin_spacing"
             android:text="@string/book_author"
-            android:textStyle="bold"
             android:textSize="18sp"
+            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/image"
             app:layout_constraintTop_toBottomOf="@id/title" />
@@ -71,6 +71,13 @@
             app:layout_constraintStart_toEndOf="@id/image"
             app:layout_constraintTop_toBottomOf="@id/category" />
 
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="image, title, author, category, publishingDate" />
+
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/description"
             android:layout_width="match_parent"
@@ -81,6 +88,6 @@
             android:layout_marginBottom="@dimen/common_spacing"
             android:text="@tools:sample/lorem/random"
             android:textSize="16sp"
-            app:layout_constraintTop_toBottomOf="@id/image" />
+            app:layout_constraintTop_toBottomOf="@id/barrier" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

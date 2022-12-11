@@ -55,7 +55,6 @@ class BooksAdapter(
         override fun areItemsTheSame(oldItem: Book, newItem: Book) =
             oldItem.id == newItem.id
 
-
         override fun areContentsTheSame(oldItem: Book, newItem: Book) =
             oldItem == newItem
     }

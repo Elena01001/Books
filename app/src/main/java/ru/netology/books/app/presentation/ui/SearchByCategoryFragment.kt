@@ -45,17 +45,25 @@ class SearchByCategoryFragment : Fragment() {
 
         val adapter = BooksAdapter(viewModel)
         binding.booksRecyclerView.adapter = adapter
+        observeGetBooksByCategory(adapter)
+        observeGetEmptyListByCategory(adapter)
 
-        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            viewModel.booksFlow.collectLatest {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.detailsFlow.collectLatest {
+                onBookCardClick(it)
+            }
+        }
+
+        return binding.root
+    }
+
+    private fun observeGetBooksByCategory(adapter: BooksAdapter) {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.bookStateFlow.collect {
                 binding.progressBar.isVisible = false
                 when (it) {
                     is BookState.SUCCESS -> {
-                        if (it.books.isEmpty()) {
-                            Toast.makeText(context, "Ничего не найдено", Toast.LENGTH_SHORT).show()
-                        } else {
-                            adapter.submitList(it.books)
-                        }
+                        adapter.submitList(it.books)
                     }
                     is BookState.FAILURE -> {
                         val message = it.message
@@ -65,21 +73,28 @@ class SearchByCategoryFragment : Fragment() {
                 }
             }
         }
-
-        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            viewModel.bookDetailsFlow.collectLatest {
-                it?.let { book -> onItemClick(book) }
-            }
-        }
-
-        return binding.root
     }
 
-    private fun onItemClick(book: Book) {
+    private fun observeGetEmptyListByCategory(adapter: BooksAdapter) {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.emptyBookListFlow.collect {
+                binding.progressBar.isVisible = false
+                adapter.submitList(emptyList())
+                Toast.makeText(context, R.string.nothing_is_found, Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun onBookCardClick(book: Book) {
         val action =
             SearchByCategoryFragmentDirections.actionSearchByCategoryFragmentToBookDetailsFragment(
-                book
+                book, CATEGORY
             )
         findNavController().navigate(action)
+
+    }
+
+    companion object {
+        const val CATEGORY = "Category"
     }
 }

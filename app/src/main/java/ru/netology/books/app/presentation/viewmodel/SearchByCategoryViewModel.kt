@@ -2,8 +2,9 @@ package ru.netology.books.app.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 import ru.netology.books.app.presentation.adapter.BookInteractionListener
 import ru.netology.books.domain.model.Book
@@ -14,27 +15,35 @@ class SearchByCategoryViewModel(
     private val getBooksListByCategoryUseCase: GetBooksListByCategoryUseCase
 ) : ViewModel(), BookInteractionListener {
 
-    private val bookDetailsViewEvent = MutableStateFlow<Book?>(null)
-    val bookDetailsFlow: StateFlow<Book?> = bookDetailsViewEvent
+    private val bookDetailsEvent = MutableSharedFlow<Book?>()
+    val detailsFlow: Flow<Book> = bookDetailsEvent.filterNotNull()
 
-    private var getBookListEvent = MutableStateFlow<BookState>(BookState.START)
-    val booksFlow: StateFlow<BookState> = getBookListEvent
+    private var getEmptyListSharedFlow = MutableSharedFlow<List<Book>>()
+    val emptyBookListFlow: Flow<List<Book>> = getEmptyListSharedFlow
+
+    private var getBooksEvent = MutableSharedFlow<BookState>(1, 1)
+    val bookStateFlow: Flow<BookState> = getBooksEvent
 
     fun getBookList(category: String) {
         viewModelScope.launch {
             getBooksListByCategoryUseCase.execute(category).onSuccess {
-                val bookListResponse = it.items?.map { it.toBook() } ?: emptyList()
-                getBookListEvent.emit(BookState.SUCCESS(bookListResponse))
+                if (it.items != null) {
+                    val bookListResponse = it.items.map { it.toBook() }
+                    getBooksEvent.emit(BookState.SUCCESS(bookListResponse))
+                } else {
+                    getEmptyListSharedFlow.emit((emptyList()))
+                    getBooksEvent.emit(BookState.START)
+                }
             }
                 .onFailure {
-                    getBookListEvent.emit(BookState.FAILURE(it.localizedMessage.toString()))
+                    getBooksEvent.emit(BookState.FAILURE(it.localizedMessage.toString()))
                 }
         }
     }
 
     override fun onBookCardClicked(book: Book) {
         viewModelScope.launch {
-            bookDetailsViewEvent.emit(book)
+            bookDetailsEvent.emit(book)
         }
     }
 
