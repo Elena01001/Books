@@ -45,8 +45,8 @@ class SearchByCategoryFragment : Fragment() {
 
         val adapter = BooksAdapter(viewModel)
         binding.booksRecyclerView.adapter = adapter
-        observeGetBooksByCategory(adapter)
-        observeGetEmptyListByCategory(adapter)
+        observeGetBookListByCategory(adapter)
+        observeGetToasts()
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.detailsFlow.collectLatest {
@@ -57,30 +57,29 @@ class SearchByCategoryFragment : Fragment() {
         return binding.root
     }
 
-    private fun observeGetBooksByCategory(adapter: BooksAdapter) {
+    private fun observeGetBookListByCategory(adapter: BooksAdapter) {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.bookStateFlow.collect {
+            viewModel.bookSuccessFlow.collect { bookList ->
+                binding.progressBar.isVisible = false
+                adapter.submitList(bookList)
+            }
+        }
+    }
+
+    private fun observeGetToasts() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.singleShotEventFlow.collect {
                 binding.progressBar.isVisible = false
                 when (it) {
-                    is BookState.SUCCESS -> {
-                        adapter.submitList(it.books)
+                    is BookState.EMPTY -> {
+                        Toast.makeText(context, R.string.nothing_is_found, Toast.LENGTH_SHORT)
+                            .show()
                     }
                     is BookState.FAILURE -> {
                         val message = it.message
                         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                     }
-                    is BookState.START -> {}
                 }
-            }
-        }
-    }
-
-    private fun observeGetEmptyListByCategory(adapter: BooksAdapter) {
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.emptyBookListFlow.collect {
-                binding.progressBar.isVisible = false
-                adapter.submitList(emptyList())
-                Toast.makeText(context, R.string.nothing_is_found, Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -91,7 +90,6 @@ class SearchByCategoryFragment : Fragment() {
                 book, CATEGORY
             )
         findNavController().navigate(action)
-
     }
 
     companion object {

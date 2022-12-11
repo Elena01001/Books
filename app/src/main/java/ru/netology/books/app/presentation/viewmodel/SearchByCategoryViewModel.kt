@@ -18,25 +18,25 @@ class SearchByCategoryViewModel(
     private val bookDetailsEvent = MutableSharedFlow<Book?>()
     val detailsFlow: Flow<Book> = bookDetailsEvent.filterNotNull()
 
-    private var getEmptyListSharedFlow = MutableSharedFlow<List<Book>>()
-    val emptyBookListFlow: Flow<List<Book>> = getEmptyListSharedFlow
+    private var singleShotSharedFlow = MutableSharedFlow<BookState>()
+    val singleShotEventFlow: Flow<BookState> = singleShotSharedFlow
 
-    private var getBooksEvent = MutableSharedFlow<BookState>(1, 1)
-    val bookStateFlow: Flow<BookState> = getBooksEvent
+    private var getBooksSuccessEvent = MutableSharedFlow<List<Book>>(1, 1)
+    val bookSuccessFlow: Flow<List<Book>> = getBooksSuccessEvent
 
     fun getBookList(category: String) {
         viewModelScope.launch {
             getBooksListByCategoryUseCase.execute(category).onSuccess {
                 if (it.items != null) {
                     val bookListResponse = it.items.map { it.toBook() }
-                    getBooksEvent.emit(BookState.SUCCESS(bookListResponse))
+                    getBooksSuccessEvent.emit(bookListResponse)
                 } else {
-                    getEmptyListSharedFlow.emit((emptyList()))
-                    getBooksEvent.emit(BookState.START)
+                    singleShotSharedFlow.emit(BookState.EMPTY)
+                    getBooksSuccessEvent.emit((emptyList()))
                 }
             }
                 .onFailure {
-                    getBooksEvent.emit(BookState.FAILURE(it.localizedMessage.toString()))
+                    singleShotSharedFlow.emit(BookState.FAILURE(it.localizedMessage.toString()))
                 }
         }
     }

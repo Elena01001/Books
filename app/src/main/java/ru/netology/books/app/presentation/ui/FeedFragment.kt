@@ -44,8 +44,8 @@ class FeedFragment : Fragment() {
 
         val adapter = BooksAdapter(viewModel)
         binding.booksRecyclerView.adapter = adapter
-        observeGetBooksByTitle(adapter)
-        observeGetEmptyListByTitle(adapter)
+        observeGetBookListByTitle(adapter)
+        observeToasts()
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.bookDetailsFlow.collectLatest {
@@ -56,30 +56,30 @@ class FeedFragment : Fragment() {
         return binding.root
     }
 
-    private fun observeGetBooksByTitle(adapter: BooksAdapter) {
+    private fun observeGetBookListByTitle(adapter: BooksAdapter) {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.booksFlow.collect {
+            viewModel.successBooksFlow.collect { bookList ->
+                binding.progressBar.isVisible = false
+                adapter.submitList(bookList)
+            }
+
+        }
+    }
+
+    private fun observeToasts() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.singleShotFlow.collect {
                 binding.progressBar.isVisible = false
                 when (it) {
-                    is BookState.SUCCESS -> {
-                        adapter.submitList(it.books)
+                    is BookState.EMPTY -> {
+                        Toast.makeText(context, R.string.nothing_is_found, Toast.LENGTH_SHORT)
+                            .show()
                     }
                     is BookState.FAILURE -> {
                         val message = it.message
                         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                     }
-                    is BookState.START -> {}
                 }
-            }
-        }
-    }
-
-    private fun observeGetEmptyListByTitle(adapter: BooksAdapter) {
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.emptyListFlow.collect {
-                binding.progressBar.isVisible = false
-                adapter.submitList(emptyList())
-                Toast.makeText(context, R.string.nothing_is_found, Toast.LENGTH_SHORT).show()
             }
         }
     }

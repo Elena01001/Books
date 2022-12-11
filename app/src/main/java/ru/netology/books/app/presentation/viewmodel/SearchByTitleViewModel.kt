@@ -2,7 +2,9 @@ package ru.netology.books.app.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 import ru.netology.books.app.presentation.adapter.BookInteractionListener
 import ru.netology.books.domain.model.Book
@@ -16,26 +18,26 @@ class SearchByTitleViewModel(
     private val bookDetailsSharedFlow = MutableSharedFlow<Book>()
     val bookDetailsFlow: Flow<Book> = bookDetailsSharedFlow.filterNotNull()
 
-    private var getEmptyListEvent = MutableSharedFlow<List<Book>>()
-    val emptyListFlow: Flow<List<Book>> = getEmptyListEvent
+    private var singleShotEvent = MutableSharedFlow<BookState>()
+    val singleShotFlow: Flow<BookState> = singleShotEvent
 
-    private var getBookListEvent = MutableSharedFlow<BookState>(1, 1)
-    val booksFlow: Flow<BookState> = getBookListEvent
+    private var getBookListSuccessEvent = MutableSharedFlow<List<Book>>(1, 1)
+    val successBooksFlow: Flow<List<Book>> = getBookListSuccessEvent
 
     fun getBookList(title: String) {
         viewModelScope.launch {
             getBooksListByTitleUseCase.execute(title).onSuccess {
                 if (it.items != null) {
                     val bookListResponse = it.items.map { it.toBook() }
-                    getBookListEvent.emit(BookState.SUCCESS(bookListResponse))
+                    getBookListSuccessEvent.emit(bookListResponse)
                 } else {
-                    getEmptyListEvent.emit((emptyList()))
-                    getBookListEvent.emit(BookState.START)
+                    singleShotEvent.emit(BookState.EMPTY)
+                    getBookListSuccessEvent.emit(emptyList())
                 }
 
             }
                 .onFailure {
-                    getBookListEvent.emit(BookState.FAILURE(it.localizedMessage.toString()))
+                    singleShotEvent.emit(BookState.FAILURE(it.localizedMessage.toString()))
                 }
         }
     }
@@ -48,7 +50,6 @@ class SearchByTitleViewModel(
 }
 
 sealed class BookState {
-    object START : BookState()
-    data class SUCCESS(val books: List<Book?>) : BookState()
+    object EMPTY : BookState()
     data class FAILURE(val message: String) : BookState()
 }
